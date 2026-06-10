@@ -1,0 +1,274 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                 String             @id @default(uuid())
+  email              String             @unique
+  name               String?
+  avatarUrl          String?
+  emailVerified      Boolean            @default(false)
+  onboardingComplete Boolean            @default(false)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  accounts           ConnectedAccount[]
+  competitors        Competitor[]
+  reports            Report[]
+  contentIdeas       ContentIdea[]
+  evals              EvalEntry[]
+  creatorProfile     CreatorProfile?
+  
+  // Better-Auth relations
+  sessions           Session[]
+  authAccounts       Account[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+}
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model CreatorProfile {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  niches        String[]
+  platforms     String[]
+  challenge     String
+  experience    String
+  goal          String
+  geminiContext String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Platform {
+  INSTAGRAM
+  TIKTOK
+  TWITTER
+  FACEBOOK
+}
+
+model ConnectedAccount {
+  id             String   @id @default(uuid())
+  userId         String
+  platform       Platform
+  handle         String
+  profileUrl     String?
+  avatarUrl      String?
+  followersCount Int      @default(0)
+  followingCount Int      @default(0)
+  postsCount     Int      @default(0)
+  bio            String?
+  isActive       Boolean  @default(true)
+  lastScrapedAt  DateTime?
+  createdAt      DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  snapshots      ProfileSnapshot[]
+  posts          Post[]
+
+  @@unique([userId, platform, handle])
+}
+
+model ProfileSnapshot {
+  id             String   @id @default(uuid())
+  accountId      String
+  followersCount Int
+  followingCount Int
+  postsCount     Int
+  engagementRate Float    @default(0)
+  date           DateTime
+
+  account        ConnectedAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, date])
+}
+
+enum PostType {
+  VIDEO
+  IMAGE
+  CAROUSEL
+  REEL
+  TWEET
+}
+
+model Post {
+  id             String   @id @default(uuid())
+  accountId      String
+  platform       Platform
+  postId         String
+  type           PostType
+  caption        String?
+  url            String?
+  likesCount     Int      @default(0)
+  commentsCount  Int      @default(0)
+  sharesCount    Int      @default(0)
+  viewsCount     Int      @default(0)
+  engagementRate Float    @default(0)
+  postedAt       DateTime
+  scrapedAt      DateTime @default(now())
+
+  account        ConnectedAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, postId])
+}
+
+model Competitor {
+  id             String   @id @default(uuid())
+  userId         String
+  platform       Platform
+  handle         String
+  profileUrl     String?
+  avatarUrl      String?
+  followersCount Int      @default(0)
+  niche          String?
+  lastScrapedAt  DateTime?
+  createdAt      DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  snapshots      CompetitorSnapshot[]
+  posts          CompetitorPost[]
+
+  @@unique([userId, platform, handle])
+}
+
+model CompetitorSnapshot {
+  id             String   @id @default(uuid())
+  competitorId   String
+  followersCount Int
+  engagementRate Float    @default(0)
+  date           DateTime
+
+  competitor     Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@unique([competitorId, date])
+}
+
+model CompetitorPost {
+  id             String   @id @default(uuid())
+  competitorId   String
+  platform       Platform
+  postId         String
+  type           PostType
+  caption        String?
+  url            String?
+  likesCount     Int      @default(0)
+  commentsCount  Int      @default(0)
+  sharesCount    Int      @default(0)
+  viewsCount     Int      @default(0)
+  engagementRate Float    @default(0)
+  postedAt       DateTime
+
+  competitor     Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@unique([competitorId, postId])
+}
+
+model ContentIdea {
+  id                  String   @id @default(uuid())
+  userId              String
+  platform            Platform
+  title               String
+  description         String
+  format              String
+  hook                String
+  estimatedEngagement String
+  basedOnPostIds      String[]
+  geminiRawResponse   String
+  evalScore           Float?
+  evalFeedback        String?
+  createdAt           DateTime @default(now())
+
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evals               EvalEntry[]
+}
+
+model TrendEntry {
+  id               String   @id @default(uuid())
+  platform         Platform
+  niche            String
+  title            String
+  description      String
+  exampleUrl       String?
+  engagementSignal Float
+  fetchedAt        DateTime @default(now())
+}
+
+enum ReportPeriod {
+  WEEKLY
+  MONTHLY
+}
+
+model Report {
+  id        String       @id @default(uuid())
+  userId    String
+  period    ReportPeriod
+  content   String       // JSON string
+  emailSent Boolean      @default(false)
+  sentAt    DateTime?
+  createdAt DateTime     @default(now())
+
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EvalEntry {
+  id                 String   @id @default(uuid())
+  userId             String
+  contentIdeaId      String
+  score              Float
+  feedback           String
+  improvedSuggestion String
+  createdAt          DateTime @default(now())
+
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contentIdea        ContentIdea  @relation(fields: [contentIdeaId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #080808;
+  --color-surface: #353536;
+  --color-surface-mid: #706f70;
+  --color-muted: #acadb1;
+  --color-subtle: #d4d8df;
+  --color-foreground: #ebedf1;
+  --color-accent: #ebedf1;
+  --color-success: #4ade80;
+  --color-success-muted: #166534;
+  --color-warning: #facc15;
+  --color-warning-muted: #854d0e;
+  --color-error: #f87171;
+  --color-error-muted: #991b1b;
+  --color-info: #60a5fa;
+  --color-info-muted: #1e3a5f;
+  --color-instagram: #e1306c;
+  --color-tiktok: #69c9d0;
+  --color-twitter: #1d9bf0;
+  --color-facebook: #1877f2;
+  --font-sans: "Inter", var(--font-sans);
+  --font-mono: "JetBrains Mono", var(--font-mono);
+}
+
+:root {
+  /* Brand Palette */
+  --color-bg: #080808;
+  --color-surface: #353536;
+  --color-surface-mid: #706f70;
+  --color-muted: #acadb1;
+  --color-subtle: #d4d8df;
+  --color-foreground: #ebedf1;
+  --color-accent: #ebedf1;
+
+  /* Status */
+  --color-success: #4ade80;
+  --color-success-muted: #166534;
+  --color-warning: #facc15;
+  --color-warning-muted: #854d0e;
+  --color-error: #f87171;
+  --color-error-muted: #991b1b;
+  --color-info: #60a5fa;
+  --color-info-muted: #1e3a5f;
+
+  /* Eval Score */
+  --color-eval-high: #4ade80;
+  --color-eval-medium: #facc15;
+  --color-eval-low: #f87171;
+  --color-eval-pending: #acadb1;
+
+  /* Platforms */
+  --color-instagram: #e1306c;
+  --color-tiktok: #69c9d0;
+  --color-twitter: #1d9bf0;
+  --color-facebook: #1877f2;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}

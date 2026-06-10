@@ -1,0 +1,56 @@
+{
+  "name": "vyrlo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "worker": "bun run worker.ts",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@google/genai": "^2.8.0",
+    "@prisma/client": "^7.8.0",
+    "@radix-ui/react-accordion": "^1.2.13",
+    "@react-email/components": "^1.0.12",
+    "better-auth": "^1.6.15",
+    "bullmq": "^5.78.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "framer-motion": "^12.40.0",
+    "ioredis": "^5.11.1",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.17.0",
+    "next": "16.2.7",
+    "next-sitemap": "^4.2.3",
+    "prisma": "^7.8.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-email": "^6.5.0",
+    "recharts": "^3.8.1",
+    "resend": "^6.12.4",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.6.0",
+    "xlsx": "^0.18.5",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.7",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "ignoreScripts": [
+    "sharp",
+    "unrs-resolver"
+  ],
+  "trustedDependencies": [
+    "sharp",
+    "unrs-resolver"
+  ]
+}
